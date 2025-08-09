@@ -1,0 +1,14 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cavacohero"
+version = "0.1.0"
+description = "Study chords: show one at a time with timed/manual advance."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["matplotlib", "pyyaml"]
+
+[project.scripts]
+cavacohero = "cavacohero.app:main"
