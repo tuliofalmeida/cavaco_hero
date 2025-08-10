@@ -10,7 +10,8 @@ def draw_shape_full(
     tab_shape: TabShape,
     tuning: Tuple[str, ...] = DEFAULT_TUNING,
     max_fret: int | None = None,
-    height_in: float = 10.0,   # <— control the Y size here
+    height_in: float = 10.0,# <— control the Y size here
+    ax: None = None
 ):
     """
     Full-neck vertical chord diagram. Always creates a NEW figure
@@ -19,8 +20,8 @@ def draw_shape_full(
     strings = len(tuning)
     max_fret = max_fret or getattr(CAVACO, "max_fret", 15)
 
-    # NEW figure with the exact height requested
-    fig, ax = plt.subplots(figsize=(3.2, height_in), dpi=85)
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(3.2, height_in), dpi=85)
 
     # coord: x=string, y=fret
     ax.set_xlim(-0.75, strings - 0.25)
@@ -49,5 +50,9 @@ def draw_shape_full(
             ax.text(s_idx, -0.25, "X", ha="center", va="bottom", fontsize=10)
 
     ax.set_title(f"{tab_shape.name}", fontsize=12, pad=16)
-    fig.tight_layout()
-    return fig, ax
+    if ax is None:
+        fig.tight_layout()
+        return fig, ax
+    
+    else:
+        return ax

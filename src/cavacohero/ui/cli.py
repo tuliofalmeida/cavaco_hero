@@ -1,4 +1,5 @@
 # src/cavacohero/ui/cli.py
+import time
 from pathlib import Path
 import matplotlib.pyplot as plt
 
@@ -98,6 +99,20 @@ def run_cli():
             if not names:
                 print("No chords matched that set.")
                 continue
+            
+        elif cmd.startswith("auto"):
+            parts = cmd.split()
+            delay = 3.0
+            randomize = False
+
+            for p in parts[1:]:
+                if p.replace('.', '', 1).isdigit():
+                    delay = float(p)
+                elif p in ("random", "rand", "shuffle"):
+                    randomize = True
+
+            autoplay(names, shapes_by_name, mode=mode, delay=delay, randomize=randomize)
+            continue
 
         else:
             print("Commands: n p q | mode zoom|full | set all|major|minor|sevenths|my_progression|custom")
@@ -111,3 +126,36 @@ def run_cli():
             # Full-neck always opens a tall figure so height changes actually stick
             draw_shape_full(shapes_by_name[names[i]][0], height_in=14.0)
             plt.show(block=False); plt.pause(0.01)
+
+
+import time
+import random
+
+def autoplay(names, shapes_by_name, mode="zoom", delay=3.0, randomize=False):
+    """
+    Loop through given chord names, displaying each for 'delay' seconds
+    in fullscreen until interrupted (Ctrl+C).
+    If randomize=True, shuffle the order each time.
+    """
+    plt.ion()
+    try:
+        while True:
+            chord_order = names.copy()
+            if randomize:
+                random.shuffle(chord_order)
+
+            for chord_name in chord_order:
+                if mode == "zoom":
+                    fig, ax = plt.subplots(figsize=(3.2, 5.0), dpi=120)
+                    draw_zoom(shapes_by_name[chord_name][0], ax=ax)
+                else:
+                    fig, ax = draw_shape_full(shapes_by_name[chord_name][0], height_in=14.0)
+
+                plt.pause(0.01)
+                time.sleep(delay)
+                plt.close(fig)
+    except KeyboardInterrupt:
+        print("\nAutoplay stopped.")
+    finally:
+        plt.ioff()
+
