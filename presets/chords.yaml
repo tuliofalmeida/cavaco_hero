@@ -15,3 +15,170 @@ chords:
     - [42, 32, 22, 12]
   B:
     - [44, 34, 24, 14]
+
+
+  tuning: ["D","G","B","D"]
+
+chords:
+  C:
+    quality: major
+    tags: [triad]
+    shapes:
+      - [42, 30, 21, 12]
+
+  D:
+    quality: major
+    tags: [triad]
+    shapes:
+      - [44, 32, 23, 14]
+
+  E:
+    quality: major
+    tags: [triad]
+    shapes:
+      - [42, 31, 20, 12]
+
+  F:
+    quality: major
+    tags: [triad]
+    shapes:
+      - [43, 32, 21, 13]
+  
+  G:
+    quality: major
+    tags: [triad]
+    shapes:
+      - [45, 34, 23, 15]
+
+  A:
+    quality: major
+    tags: [triad]
+    shapes:
+      - [42, 32, 22, 12]
+
+  B:
+    quality: major
+    tags: [triad]
+    shapes:
+      - [44, 34, 24, 14]
+
+  Cm:
+    quality: minor
+    tags: [triad]
+    shapes:
+      - [45, 35, 24, 15]
+
+  Dm:
+    quality: minor
+    tags: [triad]
+    shapes:
+      - [43, 32, 23, 13]
+
+  Em:
+    quality: minor
+    tags: [triad]
+    shapes:
+      - [42, 30, 20, 12]
+
+  Fm:
+    quality: minor
+    tags: [triad]
+    shapes:
+      - [43, 31, 21, 13]
+
+  Gm:
+    quality: minor
+    tags: [triad]
+    shapes:
+      - [45, 33, 23, 15]
+
+  Am:
+    quality: minor
+    tags: [triad]
+    shapes:
+      - [42, 32, 21, 12]
+
+  Bm:
+    quality: minor
+    tags: [triad]
+    shapes:
+      - [44, 34, 23, 14]
+
+  C7:
+    quality: major7
+    tags: [seventh]
+    shapes:
+      - [42, 33, 21, 12]
+
+  D7:
+    quality: major7
+    tags: [seventh]
+    shapes:
+      - [44, 32, 21, 14]
+
+  E7:
+    quality: major7
+    tags: [seventh]
+    shapes:
+      - [42, 31, 23, 12]
+
+  F7:
+    quality: major7
+    tags: [seventh]
+    shapes:
+      - [41, 32, 21, 13]
+
+  G7:
+    quality: major7
+    tags: [seventh]
+    shapes:
+      - [43, 34, 23, 15]
+
+  A7:
+    quality: major7
+    tags: [seventh]
+    shapes:
+      - [42, 30, 22, 12]
+
+  B7:
+    quality: major7
+    tags: [seventh]
+    shapes:
+      - [44, 32, 24, 14]
+
+sets:
+  all:
+    include: "*"                # everything
+
+  major:
+    qualities: [major]    # any chord whose quality is in this list or [major,major7]
+
+  minor:
+    qualities: [minor]    # idem or [minor, min7]
+
+  sevenths:
+    tags: [seventh]             # any chord containing any of these tags
+
+  # explicit custom named set (optional)
+  my_progression:
+    include: [C, C7, F, Fm]
+
+
+
+
+  # G7:
+  #   quality: dominant7
+  #   tags: [seventh]
+  #   shapes:
+  #     - [45, 34, 23, 15]
+
+  # A:
+  #   quality: major
+  #   shapes:
+  #     - [42, 32, 22, 12]
+
+  # Bm7:
+  #   quality: min7
+  #   tags: [seventh]
+  #   shapes:
+  #     - [44, 34, 24, 14]

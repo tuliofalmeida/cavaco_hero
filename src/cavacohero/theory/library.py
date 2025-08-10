@@ -1,47 +1,58 @@
-# src/cavacohero/theory/library.py
+from __future__ import annotations
 import yaml
 from pathlib import Path
-from typing import Dict, List, Tuple
-
+from typing import Dict, List, Tuple, Any
 from .tabs import TabShape, parse_cavaco_shape
 
-DEFAULT_TUNING = ("D", "G", "B", "D")  # cavaco default
+DEFAULT_TUNING = ("D", "G", "B", "D")
 
-def load_library(chords_yaml: Path) -> Tuple[Tuple[str, ...], Dict[str, List[TabShape]]]:
+def load_library(p: Path) -> tuple[tuple[str, ...], Dict[str, List[TabShape]], Dict[str, dict], dict]:
     """
-    Load chords from YAML using cavaco encoding.
-    Returns (tuning, shapes_by_name).
-
-    YAML format:
-      tuning: ["D","G","B","D"]
+    Loads the new YAML schema:
+      tuning: [...]
       chords:
-        C:
-          - [42, 30, 21, 12]
-        D:
-          - [44, 32, 23, 14]
+        NAME:
+          quality: ...
+          tags: [...]
+          shapes: [[42,30,21,12], ...]
+      sets:
         ...
-
-    The list for each chord must be ordered strings 4→3→2→1.
+    Returns: (tuning, shapes_by_name, meta_by_name, sets)
     """
-    data = yaml.safe_load(chords_yaml.read_text(encoding="utf-8"))
+    data = yaml.safe_load(p.read_text(encoding="utf-8"))
+
     tuning = tuple(data.get("tuning", DEFAULT_TUNING))
     strings_expected = len(tuning)
 
     shapes_by_name: Dict[str, List[TabShape]] = {}
+    meta_by_name: Dict[str, dict] = {}
 
     chords = data.get("chords", {})
     if not isinstance(chords, dict):
-        raise ValueError("YAML 'chords' must be a mapping from name to list of shapes")
+        raise ValueError("'chords' must be a mapping")
 
-    for name, variants in chords.items():
-        if not isinstance(variants, list):
-            raise ValueError(f"Chord '{name}' must map to a list of shapes")
-        parsed_variants: List[TabShape] = []
-        for raw_shape in variants:
-            if not isinstance(raw_shape, (list, tuple)):
-                raise ValueError(f"Chord '{name}' variant must be a list like [42, 30, 21, 12]")
-            shape = parse_cavaco_shape(name, raw_shape, strings_expected=strings_expected)
-            parsed_variants.append(shape)
-        shapes_by_name[name] = parsed_variants
+    for name, spec in chords.items():
+        if not isinstance(spec, dict):
+            raise ValueError(f"Chord '{name}' must be a mapping with quality/tags/shapes")
+        variants = spec.get("shapes", [])
+        if not isinstance(variants, list) or not variants:
+            raise ValueError(f"Chord '{name}' must have a non-empty 'shapes' list")
 
-    return tuning, shapes_by_name
+        parsed: List[TabShape] = []
+        for raw in variants:
+            if not isinstance(raw, (list, tuple)):
+                raise ValueError(f"Chord '{name}' shape must be a list like [42,30,21,12]")
+            parsed.append(parse_cavaco_shape(name, raw, strings_expected=strings_expected))
+
+        shapes_by_name[name] = parsed
+        meta_by_name[name] = {
+            "quality": spec.get("quality"),
+            "tags": set(spec.get("tags", [])),
+        }
+
+    sets = data.get("sets", {})
+    if sets is None: sets = {}
+    if not isinstance(sets, dict):
+        raise ValueError("'sets' must be a mapping if present")
+
+    return tuning, shapes_by_name, meta_by_name, sets
